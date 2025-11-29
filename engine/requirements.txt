@@ -1,0 +1,5 @@
+watchdog
+google-generativeai
+moviepy<2.0
+python-dotenv
+requests
