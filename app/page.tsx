@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { LPDocumentView } from "../components/LPDocumentView";
+import { LPDesignEditor } from "@/components/LPDesignEditor";
 
 type Message = {
   role: "user" | "assistant";
@@ -10,37 +11,34 @@ type Message = {
 };
 
 export default function Home() {
-  // SAMPLE DATA FOR TESTING PHASE 3 (Cyberpunk Coffee Shop Theme)
+  // SAMPLE DATA FOR TESTING PHASE 3 (AI活用ビジネスコーチング)
   const SAMPLE_BOARD_STATE = {
-    specific_scene: "雨の降るネオン街。ホログラムのメニューが浮かぶ屋台。湯気が立つカップを持つサイボーグの腕。",
-    actual_phenomenon: "脳の神経回路と同期し、究極の集中力を生み出す。",
-    state_of_the_world: "眠らない高度技術社会。人々は常に覚醒を求めている。",
-    my_existence: "デジタル革命の燃料。",
-    service_identity: "Neon Brew",
-    origin_story: "古いサーバー室の熱を利用して焙煎を始めたハッカーの物語。",
-    target_pain: "24時間連続稼働でオーバーヒート寸前のネットランナー。",
-    mechanism: "ナノカフェイン粒子による即効性エネルギーチャージ。",
-    specific_features: "24時間ドローン配送、暗号通貨決済のみ、ニューラルリンク対応。",
-    roadmap: "Phase 1: Pop-up, Phase 2: Franchise, Phase 3: Global Neural Network.",
-    offer_price: "0.001 BTC / Cup",
-    creator_stance: "システムを覚醒させろ。",
-    catch_copy: "Hack Your Sleep.",
-    scene_description: "Cyberpunk street cafe, neon lights, rain, holographic menu, steam, dark atmosphere, cinematic lighting, high contrast, futuristic city background.",
+    specific_scene: "クライアントが初めて月収100万円を達成した報告のLINEを見ている瞬間。画面越しに喜びを共有している。",
+    actual_phenomenon: "毎朝5時に起きて学んだAI活用の知識が、クライアントのビジネスを変えていく。彼らは自分の可能性を信じられるようになる。",
+    state_of_the_world: "AIが急速に進化する中、多くの起業家がどう活用すればいいかわからず途方に暮れている。正しい知識があれば人生を変えられる時代。",
+    my_existence: "迷える起業家の道標。AIを味方につけた最初の一歩を一緒に歩む伴走者。",
+    service_identity: "AI起業アカデミー",
+    origin_story: "私自身がAIで売上を3倍にした経験。失敗も成功も全てを体系化した実践プログラム。",
+    target_pain: "SNS発信、LP作成、セールスライティング...全て自分でやらなければならず、時間が足りない個人起業家。",
+    mechanism: "3ヶ月間のマンツーマンコーチングで、AIツールの使い方から実際のビジネス活用まで完全サポート。",
+    specific_features: "週1回の個別セッション、24時間LINEサポート、AIプロンプト集200個、実践ワークシート、卒業後コミュニティ参加権",
+    roadmap: "1ヶ月目: AI基礎習得、2ヶ月目: 自分のビジネスに適用、3ヶ月目: 自動化と拡大",
+    offer_price: "3ヶ月コース 498,000円（税込）",
+    creator_stance: "一人で悩む時間は終わりです。一緒にAI時代を生き抜きましょう。",
+    catch_copy: "AIを味方に、あなたのビジネスを加速する",
+    scene_description: "Professional coaching session, modern office setup, laptop with AI interface, warm ambient lighting, successful business person, motivational atmosphere, clean aesthetic",
     use_user_image: false,
-    sub_copy: "Neural-Linked Caffeine for the Digital Age."
+    sub_copy: "3ヶ月で月収100万円を目指す、AI活用マンツーマンコーチング"
   };
 
-  // Initialize with sample data for testing
-  const [messages, setMessages] = useState<Message[]>([
-    { role: "user", content: "Phase 3のテストを開始します。" },
-    { role: "assistant", content: "Neon Brewのヒアリングが完了しました。ブランドの世界観を視覚化する準備が整いました。ファーストビューを生成しますか？" }
-  ]);
+  // Initialize with empty state for Vision Architect Phase
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
 
-  const [boardState, setBoardState] = useState<any>(SAMPLE_BOARD_STATE);
-  const [currentPhase, setCurrentPhase] = useState<string>("Complete"); // Start at Complete to show Phase 3 options
+  const [boardState, setBoardState] = useState<any>({});
+  const [currentPhase, setCurrentPhase] = useState<string>("Vision Architect"); // Start at Vision Architect
   const [showPhaseTransition, setShowPhaseTransition] = useState(false);
   const [creationMode, setCreationMode] = useState<"Visual First" | "Copy First" | null>(null);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
@@ -61,6 +59,10 @@ export default function Home() {
   // Phase 3: Copywriting State
   const [lpStructure, setLpStructure] = useState<any[]>([]);
   const [copywritingStep, setCopywritingStep] = useState<"structure" | "writing" | "complete">("structure");
+  const [copyEvaluation, setCopyEvaluation] = useState<{ score: number; good_points: string[]; improvements: string[] } | null>(null);
+
+  // Phase 4: Design State
+  const [designLayout, setDesignLayout] = useState<any>(null);
 
   // Legacy/Shared State (mapped to new flow)
   const [imageSource, setImageSource] = useState<"Upload" | "AI" | null>(null);
@@ -85,6 +87,82 @@ export default function Home() {
     }
   }, [inputValue]);
 
+  // Auto-initialize designLayout when entering Design Director phase
+  useEffect(() => {
+    if (currentPhase === "Design Director" && !designLayout) {
+      console.log("[Page] Auto-initializing designLayout for Phase 4");
+
+      // Parse features from boardState
+      const parseFeatures = (featuresStr: string) => {
+        if (!featuresStr) return [];
+        return featuresStr.split(/,|、/).map((f, i) => ({
+          title: f.trim(),
+          description: "",
+          icon: ["⚡️", "🛡️", "🔗", "🧠", "💎"][i % 5]
+        })).slice(0, 5);
+      };
+
+      const features = parseFeatures(boardState.specific_features || "");
+
+      const initialLayout = {
+        theme: "Dark Neon",
+        color_palette: { primary: "#8b5cf6", background: "#09090b", text: "#f4f4f5", accent: "#06b6d4" },
+        typography: { font_family: "Inter, sans-serif", heading_style: "bold" },
+        sections: [
+          // HERO
+          {
+            id: "section-hero",
+            style: { backgroundColor: "#0a0a0a", padding: "6rem 2rem" },
+            blocks: [
+              { id: "hero-title", type: "Heading", content: { text: boardState.catch_copy || "あなたのキャッチコピー" }, style: { fontSize: "3.5rem", textAlign: "center", color: "#ffffff" } },
+              { id: "hero-subtitle", type: "Text", content: { text: boardState.sub_copy || "サブコピーを入力" }, style: { fontSize: "1.5rem", textAlign: "center", color: "#a1a1aa" } },
+              { id: "hero-cta", type: "Button", content: { text: "今すぐ申し込む" }, style: { textAlign: "center" } }
+            ]
+          },
+          // PROBLEM
+          {
+            id: "section-problem",
+            style: { backgroundColor: "#18181b", padding: "4rem 2rem" },
+            blocks: [
+              { id: "problem-heading", type: "Heading", content: { text: "こんなお悩みありませんか？" }, style: { fontSize: "2.5rem", textAlign: "center", color: "#ffffff" } },
+              { id: "problem-text", type: "Text", content: { text: boardState.target_pain || "ターゲットの悩み" }, style: { fontSize: "1.25rem", textAlign: "center", color: "#d4d4d8" } }
+            ]
+          },
+          // SOLUTION
+          {
+            id: "section-solution",
+            style: { backgroundColor: "#0a0a0a", padding: "4rem 2rem" },
+            blocks: [
+              { id: "solution-heading", type: "Heading", content: { text: "解決策" }, style: { fontSize: "2.5rem", textAlign: "center", color: "#ffffff" } },
+              { id: "solution-text", type: "Text", content: { text: boardState.mechanism || "解決のメカニズム" }, style: { fontSize: "1.25rem", textAlign: "center", color: "#d4d4d8" } }
+            ]
+          },
+          // FEATURES
+          {
+            id: "section-features",
+            style: { backgroundColor: "#18181b", padding: "4rem 2rem" },
+            blocks: [
+              { id: "features-heading", type: "Heading", content: { text: "サービスの特徴" }, style: { fontSize: "2.5rem", textAlign: "center", color: "#ffffff" } },
+              { id: "features-list", type: "Text", content: { text: features.map(f => f.title).join(" • ") || "特徴1 • 特徴2 • 特徴3" }, style: { fontSize: "1.25rem", textAlign: "center", color: "#d4d4d8" } }
+            ]
+          },
+          // OFFER
+          {
+            id: "section-offer",
+            style: { backgroundColor: "linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%)", padding: "4rem 2rem" },
+            blocks: [
+              { id: "offer-heading", type: "Heading", content: { text: "今すぐ始めよう" }, style: { fontSize: "2.5rem", textAlign: "center", color: "#ffffff" } },
+              { id: "offer-price", type: "Text", content: { text: boardState.offer_price || "価格情報" }, style: { fontSize: "2rem", textAlign: "center", color: "#ffffff", fontWeight: "bold" } },
+              { id: "offer-cta", type: "Button", content: { text: "申し込む" }, style: { textAlign: "center" } }
+            ]
+          }
+        ]
+      };
+
+      setDesignLayout(initialLayout);
+    }
+  }, [currentPhase, designLayout, boardState]);
+
 
   const toggleListening = () => {
     if (isListening) {
@@ -93,14 +171,27 @@ export default function Home() {
       return;
     }
 
-    if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
-      const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
-      const recognition = new SpeechRecognition();
+    // Ensure we're on the client side
+    if (typeof window === 'undefined') {
+      console.warn("Speech recognition not available on server.");
+      return;
+    }
+
+    const SpeechRecognitionAPI = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+
+    if (!SpeechRecognitionAPI) {
+      alert("Speech recognition is not supported in this browser. Please use Chrome or Edge.");
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognitionAPI();
       recognition.lang = "ja-JP";
       recognition.continuous = true;
       recognition.interimResults = true;
 
       recognition.onstart = () => {
+        console.log("Speech recognition started");
         setIsListening(true);
       };
 
@@ -112,27 +203,33 @@ export default function Home() {
           }
         }
         if (finalTranscript) {
+          console.log("Recognized:", finalTranscript);
           setInputValue((prev) => prev + finalTranscript);
         }
       };
 
       recognition.onend = () => {
+        console.log("Speech recognition ended");
         setIsListening(false);
       };
 
       recognition.onerror = (event: any) => {
+        console.error("Speech recognition error:", event.error);
         if (event.error === 'no-speech') {
-          console.warn("Speech recognition: No speech detected.");
-        } else {
-          console.error("Speech recognition error", event.error);
+          console.warn("No speech detected. Please try again.");
+        } else if (event.error === 'not-allowed') {
+          alert("Microphone access denied. Please enable microphone permissions in your browser settings.");
+        } else if (event.error === 'network') {
+          alert("Network error during speech recognition.");
         }
         setIsListening(false);
       };
 
       recognitionRef.current = recognition;
       recognition.start();
-    } else {
-      alert("Speech recognition is not supported in this browser.");
+    } catch (error) {
+      console.error("Failed to start speech recognition:", error);
+      alert("Failed to start speech recognition. Please check your browser settings.");
     }
   };
 
@@ -225,6 +322,17 @@ export default function Home() {
             // Check if all sections are final to determine step
             const allFinal = data.lp_structure.every((s: any) => s.status === "final");
             setCopywritingStep(allFinal ? "complete" : "structure");
+          }
+          // Handle Copy Evaluation
+          if (data.copy_evaluation) {
+            setCopyEvaluation(data.copy_evaluation);
+          }
+        }
+
+        // Handle Design Phase (Phase 4) - Layout Generation
+        if (data.phase === "Design Director") {
+          if (data.design_layout) {
+            setDesignLayout(data.design_layout);
           }
         }
 
@@ -320,6 +428,8 @@ export default function Home() {
     setShowCopyConfirmation(false);
     setLpStructure([]);
     setCopywritingStep("structure");
+    setCopyEvaluation(null);
+    setDesignLayout(null);
   };
 
   const resetDemo = () => {
@@ -434,39 +544,33 @@ export default function Home() {
               <button
                 onClick={() => {
                   setBoardState({
-                    specific_scene: "雨の降るネオン街。ホログラムのメニューが浮かぶ屋台。湯気が立つカップを持つサイボーグの腕。",
-                    actual_phenomenon: "脳の神経回路と同期し、究極の集中力を生み出す。",
-                    state_of_the_world: "眠らない高度技術社会。人々は常に覚醒を求めている。",
-                    my_existence: "デジタル革命の燃料。",
-                    service_identity: "Neon Brew",
-                    origin_story: "古いサーバー室の熱を利用して焙煎を始めたハッカーの物語。",
-                    target_pain: "24時間連続稼働でオーバーヒート寸前のネットランナー。",
-                    mechanism: "ナノカフェイン粒子による即効性エネルギーチャージ。",
-                    specific_features: "24時間ドローン配送、暗号通貨決済のみ、ニューラルリンク対応。",
-                    roadmap: "Phase 1: Pop-up, Phase 2: Franchise, Phase 3: Global Neural Network.",
-                    offer_price: "0.001 BTC / Cup",
-                    creator_stance: "システムを覚醒させろ。",
-                    catch_copy: "Hack Your Sleep.",
-                    scene_description: "Cyberpunk street cafe, neon lights, rain, holographic menu, steam, dark atmosphere, cinematic lighting, high contrast, futuristic city background.",
+                    specific_scene: "クライアントが初めて月収100万円を達成した報告のLINEを見ている瞬間。画面越しに喜びを共有している。",
+                    actual_phenomenon: "毎朝5時に起きて学んだAI活用の知識が、クライアントのビジネスを変えていく。",
+                    state_of_the_world: "AIが急速に進化する中、多くの起業家がどう活用すればいいかわからず途方に暮れている。",
+                    my_existence: "迷える起業家の道標。AIを味方につけた最初の一歩を一緒に歩む伴走者。",
+                    service_identity: "AI起業アカデミー",
+                    origin_story: "私自身がAIで売上を3倍にした経験。失敗も成功も全てを体系化した実践プログラム。",
+                    target_pain: "SNS発信、LP作成、セールスライティング...全て自分でやらなければならず、時間が足りない個人起業家。",
+                    mechanism: "3ヶ月間のマンツーマンコーチングで、AIツールの使い方から実際のビジネス活用まで完全サポート。",
+                    specific_features: "週1回の個別セッション、24時間LINEサポート、AIプロンプト集200個、実践ワークシート、卒業後コミュニティ参加権",
+                    roadmap: "1ヶ月目: AI基礎習得、2ヶ月目: 自分のビジネスに適用、3ヶ月目: 自動化と拡大",
+                    offer_price: "3ヶ月コース 498,000円（税込）",
+                    creator_stance: "一人で悩む時間は終わりです。一緒にAI時代を生き抜きましょう。",
+                    catch_copy: "AIを味方に、あなたのビジネスを加速する",
+                    scene_description: "Professional coaching session, modern office, laptop with AI interface, warm lighting",
                     use_user_image: false,
-                    sub_copy: "Neural-Linked Caffeine for the Digital Age."
+                    sub_copy: "3ヶ月で月収100万円を目指す、AI活用マンツーマンコーチング"
                   });
                   setMessages([
-                    { role: "user", content: "Phase 1を開始します。私のビジョンを聞いてください。" },
-                    { role: "assistant", content: "承知しました。では、あなたのビジネスが成功した時の「具体的なシーン」を教えてください。" },
-                    { role: "user", content: "雨の降るネオン街。ホログラムのメニューが浮かぶ屋台で、サイボーグの腕を持つ男が湯気の立つカップを持っています。" },
-                    { role: "assistant", content: "鮮明な情景ですね。その場の空気感や、そこで起きている現象について詳しく教えてください。" },
-                    { role: "user", content: "脳の神経回路と同期し、究極の集中力を生み出す「Neon Brew」というコーヒーを提供しています。眠らない高度技術社会で、人々は常に覚醒を求めています。" },
-                    { role: "assistant", content: "なるほど。その世界で、あなたの存在（Neon Brew）はどのような価値を提供していますか？" },
-                    { role: "user", content: "私はデジタル革命の燃料です。古いサーバー室の熱を利用して焙煎を始めたハッカーの物語があります。" },
-                    { role: "assistant", content: "素晴らしいビジョンです。ではPhase 2に移ります。具体的なビジネス要件を詰めましょう。ターゲットと悩みは？" },
-                    { role: "user", content: "ターゲットは24時間連続稼働でオーバーヒート寸前のネットランナー。悩みは睡眠不足と集中力の低下です。" },
-                    { role: "assistant", content: "解決策（メカニズム）と具体的な機能は？" },
-                    { role: "user", content: "ナノカフェイン粒子による即効性エネルギーチャージ。24時間ドローン配送、暗号通貨決済のみ、ニューラルリンク対応です。" },
-                    { role: "assistant", content: "価格とロードマップは？" },
-                    { role: "user", content: "0.001 BTC / Cup。Phase 1: Pop-up, Phase 2: Franchise, Phase 3: Global Neural Network。" },
-                    { role: "assistant", content: "最後に、キャッチコピーとあなたのスタンスを。" },
-                    { role: "user", content: "キャッチコピーは「Hack Your Sleep.」。スタンスは「システムを覚醒させろ」です。" },
+                    { role: "user", content: "AI起業アカデミーというビジネスコーチングサービスを始めたいと思っています。" },
+                    { role: "assistant", content: "素晴らしいですね！あなたのビジネスが大成功した時の『最高の瞬間』はどんな状態ですか？" },
+                    { role: "user", content: "クライアントから「月収100万円達成しました！」というLINEが来た瞬間ですね。" },
+                    { role: "assistant", content: "感動的ですね。そのクライアントはどんな悩みを持っていましたか？" },
+                    { role: "user", content: "SNS発信、LP作成、セールスライティング...全て一人でやらないといけなくて、時間が足りない個人起業家です。" },
+                    { role: "assistant", content: "なるほど。あなたのサービスはどうやってその悩みを解決しますか？" },
+                    { role: "user", content: "3ヶ月間のマンツーマンコーチングで、AIツールの使い方から実践まで完全サポートします。" },
+                    { role: "assistant", content: "具体的な特徴と価格を教えてください。" },
+                    { role: "user", content: "週1個別セッション、24時間LINEサポート、AIプロンプト集200個付きで、498,000円の3ヶ月コースです。" },
                     { role: "assistant", content: "Phase 1 & 2のヒアリングが完了しました。情報の密度は十分です。Phase 3へ移行し、LPの構成案を作成しますか？" }
                   ]);
                   setCurrentPhase("Product Director"); // Set to end of Phase 2
@@ -475,6 +579,168 @@ export default function Home() {
                 className="hover:text-emerald-400 transition-colors text-xs uppercase tracking-wider text-zinc-500"
               >
                 [DEBUG] Jump to Phase 3
+              </button>
+              <button
+                onClick={() => {
+                  setMessages([
+                    { role: "user", content: "デザインのみモードを開始します。" },
+                    { role: "assistant", content: "承知しました。デザインのみモードを開始します。右側のエディタでデザインを調整してください。" }
+                  ]);
+                  setCurrentPhase("Design Director");
+                  setCreationMode("Visual First");
+                  // Pre-fill with dummy data only if empty
+                  if (!boardState.catch_copy) {
+                    setBoardState({
+                      ...boardState,
+                      catch_copy: "Your Catch Copy Here",
+                      sub_copy: "Your sub copy here."
+                    });
+                  }
+
+                  // Initialize LP Structure for Editor only if empty
+                  if (lpStructure.length === 0) {
+                    setLpStructure([
+                      { section: "Hero", title: "Hero Section", content: "This is the hero section content.", status: "final" },
+                      { section: "Problem", title: "The Problem", content: "Describe the problem here.", status: "final" },
+                      { section: "Solution", title: "The Solution", content: "Describe the solution here.", status: "final" },
+                      { section: "Offer", title: "The Offer", content: "Describe the offer here.", status: "final" }
+                    ]);
+                  }
+                  // Initialize Design Layout with Generated Copy
+                  const parseFeatures = (featuresStr: string) => {
+                    if (!featuresStr) return [
+                      { title: "Feature 1", description: "Description", icon: "✨" },
+                      { title: "Feature 2", description: "Description", icon: "🚀" },
+                      { title: "Feature 3", description: "Description", icon: "💎" }
+                    ];
+                    return featuresStr.split(/,|、/).map((f, i) => ({
+                      title: f.trim(),
+                      description: "Key benefit of this feature.",
+                      icon: ["⚡️", "🛡️", "🔗", "🧠", "💎"][i % 5]
+                    })).slice(0, 3);
+                  };
+
+                  const features = parseFeatures(boardState.specific_features || "");
+
+                  // Initialize Design Layout with Board State
+                  const initialLayout = {
+                    theme: "Dark Neon",
+                    color_palette: { primary: "#06b6d4", background: "#09090b", text: "#f4f4f5", accent: "#8b5cf6" }, // Cyan primary, Dark bg
+                    typography: { font_family: "Inter, sans-serif", heading_style: "bold" },
+                    sections: [
+                      // 1. HERO
+                      {
+                        id: "section-hero",
+                        type: "Section",
+                        style: { background_type: "gradient", background_value: "linear-gradient(135deg, #000000 0%, #111827 100%)", padding: "8rem 2rem", layout: "single-column" },
+                        blocks: [
+                          {
+                            id: "hero-title",
+                            type: "Heading",
+                            content: { text: (boardState.catch_copy && boardState.catch_copy.length > 0) ? boardState.catch_copy : "Visionary AI Landing Pages" },
+                            style: { fontSize: "4.5rem", textAlign: "center", color: "#ffffff", textShadow: "0 0 20px rgba(6,182,212,0.5)" }
+                          },
+                          {
+                            id: "hero-subtitle",
+                            type: "Text",
+                            content: { text: (boardState.sub_copy && boardState.sub_copy.length > 0) ? boardState.sub_copy : "Generate high-fidelity designs with AI." },
+                            style: { fontSize: "1.5rem", textAlign: "center", color: "#9ca3af" }
+                          },
+                          {
+                            id: "hero-cta",
+                            type: "Button",
+                            content: { text: "Get Started" },
+                            style: { color: "#000000", backgroundColor: "#06b6d4", textAlign: "center", padding: "1rem 3rem", borderRadius: "9999px", fontWeight: "bold", boxShadow: "0 0 20px rgba(6,182,212,0.4)" }
+                          }
+                        ]
+                      },
+                      // 2. PROBLEM (Target Pain)
+                      {
+                        id: "section-problem",
+                        type: "Section",
+                        style: { background_type: "color", background_value: "#18181b", padding: "6rem 2rem", layout: "single-column" },
+                        blocks: [
+                          {
+                            id: "problem-heading",
+                            type: "Heading",
+                            content: { text: "The Challenge" },
+                            style: { fontSize: "2.5rem", textAlign: "center", color: "#ffffff" }
+                          },
+                          {
+                            id: "problem-text",
+                            type: "Text",
+                            content: { text: boardState.target_pain || "Identify the core problem your users face." },
+                            style: { fontSize: "1.25rem", textAlign: "center", color: "#d4d4d8", maxWidth: "800px", margin: "0 auto" }
+                          }
+                        ]
+                      },
+                      // 3. FEATURES (Specific Features)
+                      {
+                        id: "section-features",
+                        type: "Section",
+                        style: { background_type: "color", background_value: "#09090b", padding: "6rem 2rem", layout: "grid" },
+                        blocks: [
+                          {
+                            id: "feat-grid",
+                            type: "FeatureGrid",
+                            content: { items: features },
+                            style: { color: "#ffffff" }
+                          }
+                        ]
+                      },
+                      // 4. SOLUTION (Mechanism)
+                      {
+                        id: "section-solution",
+                        type: "Section",
+                        style: { background_type: "color", background_value: "#18181b", padding: "6rem 2rem", layout: "single-column" },
+                        blocks: [
+                          {
+                            id: "solution-heading",
+                            type: "Heading",
+                            content: { text: "Our Solution" },
+                            style: { fontSize: "2.5rem", textAlign: "center", color: "#ffffff" }
+                          },
+                          {
+                            id: "solution-text",
+                            type: "Text",
+                            content: { text: boardState.mechanism || "How we solve the problem." },
+                            style: { fontSize: "1.25rem", textAlign: "center", color: "#d4d4d8", maxWidth: "800px", margin: "0 auto" }
+                          }
+                        ]
+                      },
+                      // 5. OFFER (Price)
+                      {
+                        id: "section-offer",
+                        type: "Section",
+                        style: { background_type: "gradient", background_value: "linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)", padding: "6rem 2rem", layout: "single-column" },
+                        blocks: [
+                          {
+                            id: "offer-heading",
+                            type: "Heading",
+                            content: { text: "Join the Revolution" },
+                            style: { fontSize: "3rem", textAlign: "center", color: "#ffffff" }
+                          },
+                          {
+                            id: "offer-price",
+                            type: "Text",
+                            content: { text: boardState.offer_price || "Contact for pricing" },
+                            style: { fontSize: "2rem", textAlign: "center", color: "#ffffff", fontWeight: "bold" }
+                          },
+                          {
+                            id: "offer-cta",
+                            type: "Button",
+                            content: { text: "Pre-Order Now" },
+                            style: { color: "#06b6d4", backgroundColor: "#ffffff", textAlign: "center", padding: "1rem 3rem", borderRadius: "9999px", fontWeight: "bold", fontSize: "1.25rem" }
+                          }
+                        ]
+                      }
+                    ]
+                  };
+                  setDesignLayout(initialLayout);
+                }}
+                className="hover:text-pink-400 transition-colors text-xs uppercase tracking-wider text-zinc-500"
+              >
+                Design Only
               </button>
               <button className="bg-white text-black px-4 py-2 rounded-full hover:bg-zinc-200 transition-colors">
                 Get Started
@@ -485,8 +751,8 @@ export default function Home() {
 
         {/* Main Content - Sticky Split Screen */}
         <div className="flex h-screen pt-16 overflow-hidden">
-          {/* Left Panel: Chat Interface (Independent Scroll) */}
-          <div className="w-full md:w-1/2 h-full overflow-y-auto p-6 pb-32 scrollbar-hide">
+          {/* Left Panel: Chat Interface (Independent Scroll) - Hidden in Design Director */}
+          <div className={`h-full overflow-y-auto p-6 pb-32 scrollbar-hide transition-all duration-500 ease-in-out ${currentPhase === "Design Director" ? "hidden" : "w-full md:w-1/2"}`}>
             <div className="max-w-2xl mx-auto space-y-6">
               {messages.length === 0 ? (
                 <div className="text-center space-y-8 mt-10">
@@ -574,6 +840,140 @@ export default function Home() {
                           setCreationMode("Visual First"); // Enter Design Mode
                           setLayoutStrategy("Type B"); // Default to Type B (Immersive)
                           setImageSource("AI");
+
+                          // Initialize Design Layout with Generated Copy
+                          // Helper to parse features
+                          const parseFeatures = (featuresStr: string) => {
+                            if (!featuresStr) return [
+                              { title: "Feature 1", description: "Description", icon: "✨" },
+                              { title: "Feature 2", description: "Description", icon: "🚀" },
+                              { title: "Feature 3", description: "Description", icon: "💎" }
+                            ];
+                            return featuresStr.split(/,|、/).map((f, i) => ({
+                              title: f.trim(),
+                              description: "Key benefit of this feature.",
+                              icon: ["⚡️", "🛡️", "🔗", "🧠", "💎"][i % 5]
+                            })).slice(0, 3);
+                          };
+
+                          const features = parseFeatures(boardState.specific_features || "");
+
+                          // Initialize Design Layout with Generated Copy & Structure
+                          // Initialize Design Layout with Generated Copy & Structure
+                          setDesignLayout({
+                            theme: "Dark Neon",
+                            color_palette: { primary: "#06b6d4", background: "#09090b", text: "#f4f4f5", accent: "#8b5cf6" }, // Cyan primary, Dark bg
+                            typography: { font_family: "Inter, sans-serif", heading_style: "bold" },
+                            sections: [
+                              // 1. HERO
+                              {
+                                id: "section-hero",
+                                type: "Section",
+                                style: { background_type: "gradient", background_value: "linear-gradient(135deg, #000000 0%, #111827 100%)", padding: "8rem 2rem", layout: "single-column" },
+                                blocks: [
+                                  {
+                                    id: "hero-title",
+                                    type: "Heading",
+                                    content: { text: boardState.catch_copy || "Visionary AI Landing Pages" },
+                                    style: { fontSize: "4.5rem", textAlign: "center", color: "#ffffff", textShadow: "0 0 20px rgba(6,182,212,0.5)" }
+                                  },
+                                  {
+                                    id: "hero-subtitle",
+                                    type: "Text",
+                                    content: { text: boardState.sub_copy || "Generate high-fidelity designs with AI." },
+                                    style: { fontSize: "1.5rem", textAlign: "center", color: "#9ca3af" }
+                                  },
+                                  {
+                                    id: "hero-cta",
+                                    type: "Button",
+                                    content: { text: "Get Started" },
+                                    style: { color: "#000000", backgroundColor: "#06b6d4", textAlign: "center", padding: "1rem 3rem", borderRadius: "9999px", fontWeight: "bold", boxShadow: "0 0 20px rgba(6,182,212,0.4)" }
+                                  }
+                                ]
+                              },
+                              // 2. PROBLEM (Target Pain)
+                              {
+                                id: "section-problem",
+                                type: "Section",
+                                style: { background_type: "color", background_value: "#18181b", padding: "6rem 2rem", layout: "single-column" },
+                                blocks: [
+                                  {
+                                    id: "problem-heading",
+                                    type: "Heading",
+                                    content: { text: "The Challenge" },
+                                    style: { fontSize: "2.5rem", textAlign: "center", color: "#ffffff" }
+                                  },
+                                  {
+                                    id: "problem-text",
+                                    type: "Text",
+                                    content: { text: boardState.target_pain || "Identify the core problem your users face." },
+                                    style: { fontSize: "1.25rem", textAlign: "center", color: "#d4d4d8", maxWidth: "800px", margin: "0 auto" }
+                                  }
+                                ]
+                              },
+                              // 3. FEATURES (Specific Features)
+                              {
+                                id: "section-features",
+                                type: "Section",
+                                style: { background_type: "color", background_value: "#09090b", padding: "6rem 2rem", layout: "grid" },
+                                blocks: [
+                                  {
+                                    id: "feat-grid",
+                                    type: "FeatureGrid",
+                                    content: { items: features },
+                                    style: { color: "#ffffff" }
+                                  }
+                                ]
+                              },
+                              // 4. SOLUTION (Mechanism)
+                              {
+                                id: "section-solution",
+                                type: "Section",
+                                style: { background_type: "color", background_value: "#18181b", padding: "6rem 2rem", layout: "single-column" },
+                                blocks: [
+                                  {
+                                    id: "solution-heading",
+                                    type: "Heading",
+                                    content: { text: "Our Solution" },
+                                    style: { fontSize: "2.5rem", textAlign: "center", color: "#ffffff" }
+                                  },
+                                  {
+                                    id: "solution-text",
+                                    type: "Text",
+                                    content: { text: boardState.mechanism || "How we solve the problem." },
+                                    style: { fontSize: "1.25rem", textAlign: "center", color: "#d4d4d8", maxWidth: "800px", margin: "0 auto" }
+                                  }
+                                ]
+                              },
+                              // 5. OFFER (Price)
+                              {
+                                id: "section-offer",
+                                type: "Section",
+                                style: { background_type: "gradient", background_value: "linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)", padding: "6rem 2rem", layout: "single-column" },
+                                blocks: [
+                                  {
+                                    id: "offer-heading",
+                                    type: "Heading",
+                                    content: { text: "Join the Revolution" },
+                                    style: { fontSize: "3rem", textAlign: "center", color: "#ffffff" }
+                                  },
+                                  {
+                                    id: "offer-price",
+                                    type: "Text",
+                                    content: { text: boardState.offer_price || "Contact for pricing" },
+                                    style: { fontSize: "2rem", textAlign: "center", color: "#ffffff", fontWeight: "bold" }
+                                  },
+                                  {
+                                    id: "offer-cta",
+                                    type: "Button",
+                                    content: { text: "Pre-Order Now" },
+                                    style: { color: "#06b6d4", backgroundColor: "#ffffff", textAlign: "center", padding: "1rem 3rem", borderRadius: "9999px", fontWeight: "bold", fontSize: "1.25rem" }
+                                  }
+                                ]
+                              }
+                            ]
+                          });
+
                           handleGenerateFirstView(); // Auto-generate
                         }}
                         className="w-full py-4 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-xl font-bold text-white text-lg shadow-lg hover:shadow-emerald-500/25 transition-all"
@@ -587,15 +987,20 @@ export default function Home() {
             </div>
           </div>
 
-
-
           {/* Right Panel: Live Vision Board OR First View Preview OR LP Document View */}
-          <div className="hidden md:flex w-1/2 h-full overflow-y-auto border-l border-white/5 bg-black/20 backdrop-blur-sm relative">
+          <div className={`
+            transition-all duration-500 ease-in-out bg-black/20 backdrop-blur-sm relative
+            ${currentPhase === "Design Director"
+              ? "fixed inset-0 z-50 w-full h-full bg-zinc-900" // Full Screen Mode
+              : "hidden md:flex h-full overflow-y-auto border-l border-white/5 w-1/2" // Split Screen Mode
+            }
+          `}>
             {currentPhase === "Copywriting" ? (
               /* LP Document View (Phase 3) */
               <LPDocumentView
                 lpStructure={lpStructure}
                 copywritingStep={copywritingStep}
+                copyEvaluation={copyEvaluation}
                 onProceedToDesign={() => {
                   setInputValue("Proceed to Design");
                   sendMessage();
@@ -605,6 +1010,18 @@ export default function Home() {
                   setLayoutStrategy("Type B");
                   setImageSource("AI");
                   handleGenerateFirstView();
+                }}
+              />
+            ) : currentPhase === "Design Director" ? (
+              /* LP Design Editor (Phase 4) */
+              <LPDesignEditor
+                key={designLayout ? "loaded" : "loading"} // Force remount on layout change
+                lpStructure={lpStructure}
+                designLayout={designLayout}
+                onUpdateContent={(index, newContent) => {
+                  const newStructure = [...lpStructure];
+                  newStructure[index].content = newContent;
+                  setLpStructure(newStructure);
                 }}
               />
             ) : creationMode === "Visual First" || creationMode === "Copy First" ? (
@@ -962,37 +1379,41 @@ export default function Home() {
         </div>
 
         {/* Phase Transition Overlay */}
-        {showPhaseTransition && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md animate-fade-in">
-            <div className="text-center space-y-4">
-              <div className="inline-block p-4 rounded-full bg-purple-500/20 mb-4 animate-bounce">
-                <svg className="w-12 h-12 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
-              </div>
-              <h2 className="text-4xl md:text-6xl font-bold text-white tracking-tighter">Phase 1 Complete</h2>
-              <p className="text-xl text-zinc-400 font-mono">Switching to Product Director Mode...</p>
-              <div className="w-64 h-1 bg-zinc-800 mx-auto rounded-full overflow-hidden mt-8">
-                <div className="w-full h-full bg-gradient-to-r from-purple-500 to-blue-500 animate-progress-bar"></div>
+        {
+          showPhaseTransition && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md animate-fade-in">
+              <div className="text-center space-y-4">
+                <div className="inline-block p-4 rounded-full bg-purple-500/20 mb-4 animate-bounce">
+                  <svg className="w-12 h-12 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <h2 className="text-4xl md:text-6xl font-bold text-white tracking-tighter">Phase 1 Complete</h2>
+                <p className="text-xl text-zinc-400 font-mono">Switching to Product Director Mode...</p>
+                <div className="w-64 h-1 bg-zinc-800 mx-auto rounded-full overflow-hidden mt-8">
+                  <div className="w-full h-full bg-gradient-to-r from-purple-500 to-blue-500 animate-progress-bar"></div>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )
+        }
 
         {/* Generated Copy Display (Overlay) - Only show if NOT in creation mode (legacy) or if we want to show it on top of everything */}
         {/* We are moving this into the Right Panel for creation mode, but keeping it here for fallback or if we want a full screen effect later */}
-        {generatedCopy && !creationMode && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center z-30 pointer-events-none px-6 md:px-12 bg-black/40 backdrop-blur-sm transition-all duration-1000">
-            <h2 className="text-4xl md:text-6xl font-bold tracking-tight bg-gradient-to-b from-white to-white/80 bg-clip-text text-transparent drop-shadow-2xl text-center animate-fade-in-up leading-tight">
-              {generatedCopy}
-            </h2>
-            {boardState.catch_copy && boardState.catch_copy !== generatedCopy && (
-              <p className="mt-6 text-xl md:text-2xl text-white/90 font-medium drop-shadow-lg text-center animate-fade-in-up delay-100 max-w-2xl leading-relaxed">
-                {boardState.catch_copy}
-              </p>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
+        {
+          generatedCopy && !creationMode && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center z-30 pointer-events-none px-6 md:px-12 bg-black/40 backdrop-blur-sm transition-all duration-1000">
+              <h2 className="text-4xl md:text-6xl font-bold tracking-tight bg-gradient-to-b from-white to-white/80 bg-clip-text text-transparent drop-shadow-2xl text-center animate-fade-in-up leading-tight">
+                {generatedCopy}
+              </h2>
+              {boardState.catch_copy && boardState.catch_copy !== generatedCopy && (
+                <p className="mt-6 text-xl md:text-2xl text-white/90 font-medium drop-shadow-lg text-center animate-fade-in-up delay-100 max-w-2xl leading-relaxed">
+                  {boardState.catch_copy}
+                </p>
+              )}
+            </div>
+          )
+        }
+      </div >
+    </div >
   );
 }
 // Helper Component for Vision Cards

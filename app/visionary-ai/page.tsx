@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import CountdownTimer from "@/components/CountdownTimer";
 
 export default function VisionaryAILP() {
     const [scrolled, setScrolled] = useState(false);
@@ -90,6 +91,11 @@ export default function VisionaryAILP() {
                             title="Visionary AI Teaser"
                         ></iframe>
                     </div>
+                </div>
+
+                {/* Countdown Timer 1 */}
+                <div className="mt-16 w-full">
+                    <CountdownTimer targetDate="2025-12-05T23:59:59" />
                 </div>
 
                 {/* Scroll Indicator */}
@@ -477,8 +483,63 @@ export default function VisionaryAILP() {
             </section>
 
             {/* Pricing */}
+            {/* Outcomes Section */}
+            <section className="relative z-10 py-32 px-6 bg-gradient-to-b from-black to-zinc-900/50">
+                <div className="max-w-4xl mx-auto">
+                    <div className="text-center mb-16">
+                        <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+                            The Future You
+                        </h2>
+                        <p className="text-zinc-400 text-lg">このプログラムを経て、あなたはこう変わる。</p>
+                    </div>
+
+                    <div className="space-y-6">
+                        {[
+                            {
+                                title: "プレイヤーからの卒業",
+                                desc: "「自分でやった方が早い」という信念から解放され、AIに任せて「指揮する」という、意識の自由を手に入れることができます。"
+                            },
+                            {
+                                title: "思考と実装のタイムラグ・ゼロ",
+                                desc: "「あ、これやりたい」と思ったビジョンを、AIチームがそれを形にする。アイデアが鮮度の高いまま、具現化されていくスムーズさと簡単さを体感します。"
+                            },
+                            {
+                                title: "あなたと共鳴する「チーム」の獲得",
+                                desc: "ただの便利ツールではない。お互いの性格やビジョンを理解し、適切に動いてくれる、AIパートナーとチームを構築できます。"
+                            },
+                            {
+                                title: "ビジョナリーとしての覚醒",
+                                desc: "目の前の\"やること\"から距離がおかれ、視座が高まります。それによって、あなたは「どうやるか」から、「何が起こるのか」にエネルギーを注げるようになります。"
+                            },
+                            {
+                                title: "ビジネスの次元上昇(シフト)",
+                                desc: "1人の限界を超え、AIチームと共にビジネスを拡大する。AIの無限の可能性を引き出し、軽やかに価値を生み出す体制が完成します。"
+                            }
+                        ].map((item, index) => (
+                            <div key={index} className="flex items-start gap-6 p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-emerald-500/50 transition-all group">
+                                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 group-hover:bg-emerald-500/20 transition-colors mt-1">
+                                    <span className="text-emerald-400 font-bold text-xl">{index + 1}</span>
+                                </div>
+                                <div>
+                                    <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-emerald-50 transition-colors mb-2">
+                                        {item.title}
+                                    </h3>
+                                    <p className="text-zinc-400 leading-relaxed">
+                                        {item.desc}
+                                    </p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
             <section className="relative z-10 py-32 px-6">
                 <div className="max-w-5xl mx-auto">
+                    {/* Countdown Timer 2 */}
+                    <div className="mb-20">
+                        <CountdownTimer targetDate="2025-12-05T23:59:59" />
+                    </div>
                     <div className="text-center mb-20">
                         <h2 className="text-4xl md:text-5xl font-bold mb-6">Your Team Plans</h2>
                         <p className="text-zinc-400">サポートの厚さに応じて2つのプランを用意しました。</p>
@@ -492,7 +553,7 @@ export default function VisionaryAILP() {
                             </div>
                             <h3 className="text-2xl font-bold mb-2 text-center">Plan A</h3>
                             <p className="text-zinc-400 text-center text-sm mb-8">
-                                まずチーム編成をしっかり行い、<br />スタートを切りたい方向け
+                                まずはあなた専用のチームを構築し、<br />ビジネスをシフトさせていきたい方向け（2ヶ月間のプログラム）
                             </p>
                             <div className="text-center mb-8">
                                 <span className="text-4xl font-bold">¥49,800</span>
@@ -501,11 +562,11 @@ export default function VisionaryAILP() {
                             <ul className="space-y-4 mb-8 border-t border-white/5 pt-8">
                                 <li className="flex items-center gap-3 text-sm">
                                     <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
-                                    動画コンテンツ・ワークショップ参加
+                                    動画コンテンツ・ワークショップ参加（計4回以上）
                                 </li>
                                 <li className="flex items-center gap-3 text-sm">
                                     <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
-                                    グループチャットor個別チャット
+                                    期間中チャット無制限（グループor個別）
                                 </li>
                                 <li className="flex items-center gap-3 text-sm font-bold text-white">
                                     <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
@@ -529,7 +590,7 @@ export default function VisionaryAILP() {
                             </div>
                             <h3 className="text-2xl font-bold mb-2 text-center text-emerald-400">Plan B</h3>
                             <p className="text-zinc-400 text-center text-sm mb-8">
-                                運用後の「微調整」や「更なる拡大」<br />まで相談したい方向け
+                                運用後の「微調整」や「更なる拡大」<br />まで相談したい方向け（2ヶ月間のプログラム）
                             </p>
                             <div className="text-center mb-8">
                                 <span className="text-4xl font-bold text-white">¥62,800</span>
@@ -538,11 +599,11 @@ export default function VisionaryAILP() {
                             <ul className="space-y-4 mb-8 border-t border-white/5 pt-8">
                                 <li className="flex items-center gap-3 text-sm">
                                     <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
-                                    動画コンテンツ・ワークショップ参加
+                                    動画コンテンツ・ワークショップ参加（計4回以上）
                                 </li>
                                 <li className="flex items-center gap-3 text-sm">
                                     <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
-                                    グループチャットor個別チャット
+                                    期間中チャット無制限（グループor個別）
                                 </li>
                                 <li className="flex items-center gap-3 text-sm font-bold text-white">
                                     <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>

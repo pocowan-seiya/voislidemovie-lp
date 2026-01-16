@@ -1,5 +1,5 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import { NextResponse } from "next/server";
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+require('dotenv').config({ path: '.env.local' });
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || "");
 
@@ -20,9 +20,9 @@ const systemInstruction = `
 以下の4つの観点で取材を行ってください。**一度に1つずつ**質問し、深掘りしてください。
 
 ## Q1. The Specific Scene (Result)
-- **聞きたいこと**: プロジェクトが大成功した時の、あなたが「これが最高だ！」と思う瞬間。
+- **聞きたいこと**: プロジェクトが大成功した時の、具体的な「ガッツポーズしたくなる瞬間」。
 - **NG**: "どんな景色ですか？" "光の様子は？"
-- **OK**: **「そのビジネスが大成功した時、あなたにとっての『最高の瞬間』ってどんな状態ですか？誰がいて、何が起きていますか？」**
+- **OK**: **「そのビジネスにおいて、あなたにとっての「最高の結果」ってどんな状態ですか？そこでは何が起きていて、どんな景色が広がっていますか？」**
 
 ## Q2. Actual Phenomenon (Atmosphere)
 - **聞きたいこと**: その場の具体的な空気感、音、動き。
@@ -91,33 +91,12 @@ Score >= 80% またはユーザーのスキップ指示があった場合のみ�
 - **Action**: 「原稿が完成しました。右側のパネルで確認してください。評価スコアはXX点です。問題なければ、デザインに進みます。」と伝える。
 
 # Phase 4: DESIGN (The Designer)
-目的：確定したコピーを元に、LP全体のデザインを構築する。
-このフェーズは3ステップで進行します。
-
-## Step A: Design Dialogue (デザイン対話)
-- Phase 3完了後、ユーザーとデザインについて対話を行います。
-- **質問例** (1つずつ、自然な会話の流れで):
-    1. 「コピーが完成しました！次はデザインですね。どんな雰囲気のLPにしたいですか？例えば、モダン、高級感、サイバーパンク、シンプル、温かみのある感じ...」
-    2. 「メインカラーは何色がいいですか？ブランドカラーがあれば教えてください。なければ、私が提案します。」
-    3. 「背景には写真を使いますか？AIで自動生成することもできます。」
-- **ユーザーが「お任せ」と言った場合**: Phase 1-3の情報を元に最適なデザインを自動決定してください。
-- **Action**: 回答を収集したら、「それでは、デザインを作成しますね！」と伝え、Step Bへ進む。
-
-## Step B: Layout Generation (全体レイアウト生成)
-- ユーザーの希望を反映した、**完全なLPデザイン**を生成します。
-- **生成内容**:
-    - 完全なセクション構成 (Hero, Problem, Solution, Features, Offer, CTA)
-    - 各セクションの背景画像プロンプト (scene_description)
-    - 色使い、フォント、レイアウト
-- **Output**: \`design_layout\` オブジェクトに以下を出力:
-    - \`theme\`: 全体のテーマ
-    - \`color_palette\`: 完全なカラーパレット
-    - \`sections\`: 各セクションの詳細定義
-- **Action**: 「デザインが完成しました！右側のプレビューで確認してください。気に入らない部分があれば、エディタで自由にカスタマイズできます。」と伝える。
-
-## Step C: Editor Handoff (エディタ引き渡し)
-- ユーザーが「OK」「いい感じ」などと言ったら、エディタモードに移行。
-- **Action**: 「ブロックエディタで自由に編集できます。/（スラッシュ）でブロックを追加、ドラッグで並び替えができます。」と案内する。
+目的：確定したコピーを元に、最適なファーストビューを生成する。
+- ユーザーが「デザインに進む」「Proceed to Design」を選択した場合のみ移行。
+- **Design Only Mode**: ユーザーが「デザインのみ」「Design Only」を選択した場合、Phase 1-3をスキップしてここから開始します。その場合、ユーザーが入力したテキストや既存の情報を元に画像を生成します。
+- **Action**: 
+    1. \`phase\` を \`"Design Director"\` にする。
+    2. \`design_command\` を発行し、Phase 1のビジョンとPhase 3のコピーを元に画像を生成する。
 
 # Output Format (CRITICAL)
 **必ず以下のJSON形式のみ**を出力してください。
@@ -140,41 +119,6 @@ Score >= 80% またはユーザーのスキップ指示があった場合のみ�
     "score": number, // 0-100
     "good_points": ["良い点1", "良い点2"],
     "improvements": ["改善点1", "改善点2"]
-  },
-  "design_layout": {
-    "theme": "Modern" | "Classic" | "Cyberpunk" | "Minimal" | "Luxury",
-    "color_palette": {
-      "primary": "color_code",
-      "secondary": "color_code",
-      "background": "color_code",
-      "text": "color_code",
-      "accent": "color_code"
-    },
-    "typography": {
-      "font_family": "font_name",
-      "heading_style": "bold" | "normal" | "italic"
-    },
-    "blocks": [
-      {
-        "id": "unique_id",
-        "type": "Hero" | "FeatureGrid" | "Content" | "CTA" | "Testimonials",
-        "content": {
-          "title": "string",
-          "subtitle": "string",
-          "body": "string",
-          "items": [
-            { "icon": "emoji", "title": "string", "description": "string" }
-          ],
-          "image_prompt": "string"
-        },
-        "style": {
-          "background_color": "color_code",
-          "text_align": "left" | "center" | "right",
-          "layout_variant": "overlay" | "split_left" | "split_right" | "cards" | "simple",
-          "padding": "medium"
-        }
-      }
-    ]
   },
   "board_state": {
     "vision_concept": "Phase 1要約",
@@ -209,41 +153,75 @@ Score >= 80% またはユーザーのスキップ指示があった場合のみ�
 }
 \`\`\`
 `;
-export async function POST(req: Request) {
-  try {
-    const { messages } = await req.json();
-    const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash-preview-09-2025",
-      systemInstruction: systemInstruction,
-      generationConfig: { responseMimeType: "application/json" }
-    });
 
-    let history = messages.slice(0, -1).map((m: any) => ({
-      role: m.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: m.content }]
-    }));
+async function run() {
+    try {
+        const model = genAI.getGenerativeModel({
+            model: "gemini-2.5-flash-preview-09-2025",
+            systemInstruction: systemInstruction,
+            generationConfig: { responseMimeType: "application/json" }
+        });
 
-    // Ensure history starts with a user message
-    if (history.length > 0 && history[0].role === 'model') {
-      history = [
-        { role: 'user', parts: [{ text: "Start session." }] },
-        ...history
-      ];
+        const messages = [
+            { role: "user", content: "Phase 1を開始します。私のビジョンを聞いてください。" },
+            { role: "assistant", content: "承知しました。では、あなたのビジネスが成功した時の「具体的なシーン」を教えてください。" },
+            { role: "user", content: "雨の降るネオン街。ホログラムのメニューが浮かぶ屋台で、サイボーグの腕を持つ男が湯気の立つカップを持っています。" },
+            { role: "assistant", content: "鮮明な情景ですね。その場の空気感や、そこで起きている現象について詳しく教えてください。" },
+            { role: "user", content: "脳の神経回路と同期し、究極の集中力を生み出す「Neon Brew」というコーヒーを提供しています。眠らない高度技術社会で、人々は常に覚醒を求めています。" },
+            { role: "assistant", content: "なるほど。その世界で、あなたの存在（Neon Brew）はどのような価値を提供していますか？" },
+            { role: "user", content: "私はデジタル革命の燃料です。古いサーバー室の熱を利用して焙煎を始めたハッカーの物語があります。" },
+            { role: "assistant", content: "素晴らしいビジョンです。ではPhase 2に移ります。具体的なビジネス要件を詰めましょう。ターゲットと悩みは？" },
+            { role: "user", content: "ターゲットは24時間連続稼働でオーバーヒート寸前のネットランナー。悩みは睡眠不足と集中力の低下です。" },
+            { role: "assistant", content: "解決策（メカニズム）と具体的な機能は？" },
+            { role: "user", content: "ナノカフェイン粒子による即効性エネルギーチャージ。24時間ドローン配送、暗号通貨決済のみ、ニューラルリンク対応です。" },
+            { role: "assistant", content: "価格とロードマップは？" },
+            { role: "user", content: "0.001 BTC / Cup。Phase 1: Pop-up, Phase 2: Franchise, Phase 3: Global Neural Network。" },
+            { role: "assistant", content: "最後に、キャッチコピーとあなたのスタンスを。" },
+            { role: "user", content: "キャッチコピーは「Hack Your Sleep.」。スタンスは「システムを覚醒させろ」です。" },
+            { role: "assistant", content: "Phase 1 & 2のヒアリングが完了しました。情報の密度は十分です。Phase 3へ移行し、LPの構成案を作成しますか？" },
+            { role: "user", content: "はい、お願いします。" },
+            {
+                role: "assistant", content: JSON.stringify({
+                    reply: "承知しました。では、Phase 3: Copywritingを開始します。まずはLPの構成案を提示します。",
+                    phase: "Copywriting",
+                    lp_structure: [
+                        { section: "Hero", title: "Hack Your Sleep.", content: "概要: メインビジュアルとキャッチコピーで、ターゲットの注意を一瞬で惹きつける。", status: "pending" },
+                        { section: "Problem", title: "オーバーヒート寸前のあなたへ", content: "概要: 24時間連続稼働による睡眠不足と集中力低下の痛みに共感する。", status: "pending" },
+                        { section: "Solution", title: "Neon Brew: デジタル革命の燃料", content: "概要: ナノカフェイン粒子による即効性エネルギーチャージという解決策を提示。", status: "pending" }
+                    ]
+                })
+            },
+            { role: "user", content: "OK, proceed with this structure." }
+        ];
+
+        let history = messages.slice(0, -1).map((m) => ({
+            role: m.role === 'assistant' ? 'model' : 'user',
+            parts: [{ text: m.content }]
+        }));
+
+        const lastMessage = messages[messages.length - 1].content;
+
+        console.log("Starting chat...");
+        const chat = model.startChat({
+            history: history,
+        });
+
+        console.log("Sending message:", lastMessage);
+        const result = await chat.sendMessage(lastMessage);
+        const response = await result.response;
+        const text = response.text();
+
+        console.log("Response received:");
+        console.log(text);
+        console.log("Parsed JSON:");
+        console.log(JSON.parse(text));
+
+    } catch (error) {
+        console.error("Error details:", error);
+        if (error.response) {
+            console.error("API Response Error:", await error.response.text());
+        }
     }
-
-    const lastMessage = messages[messages.length - 1].content;
-
-    const chat = model.startChat({
-      history: history,
-    });
-
-    const result = await chat.sendMessage(lastMessage);
-    const response = await result.response;
-    const text = response.text();
-
-    return NextResponse.json(JSON.parse(text));
-  } catch (error) {
-    console.error("Error in Vision API:", error);
-    return NextResponse.json({ error: "Failed to process request", details: error instanceof Error ? error.message : String(error) }, { status: 500 });
-  }
 }
+
+run();
