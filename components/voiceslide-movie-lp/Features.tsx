@@ -2,12 +2,12 @@ export default function Features() {
     return (
         <section className="py-24 bg-slate-900 text-white relative overflow-hidden">
             {/* Background blobs */}
-            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-500/20 rounded-full blur-3xl -z-10 animate-pulse" />
-            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-cyan-500/20 rounded-full blur-3xl -z-10 animate-pulse delay-1000" />
+            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-3xl -z-10 animate-pulse" />
+            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-cyan-500/10 rounded-full blur-3xl -z-10 animate-pulse delay-1000" />
 
             <div className="max-w-6xl mx-auto px-6">
-                <h2 className="text-3xl md:text-5xl font-bold text-center mb-20 tracking-tight">
-                    VoiSlide Movie の3つの特徴
+                <h2 className="text-2xl md:text-5xl font-bold text-center mb-20 tracking-tight">
+                    VoiSlide Movie の<br className="md:hidden" />3つの特徴
                 </h2>
 
                 <div className="space-y-24">
@@ -38,7 +38,7 @@ export default function Features() {
                                 <p className="text-xl font-bold text-white mt-1">制作時間：3時間 → 15分（90%削減）</p>
                             </div>
                         </div>
-                        <div className="flex-1 order-1 md:order-2 flex justify-center">
+                        <div className="flex-1 order-1 md:order-2 flex justify-center relative">
                             <div className="w-full max-w-md aspect-square bg-gradient-to-br from-blue-500 to-cyan-500 rounded-3xl opacity-90 blur-xl absolute scale-90" />
                             <div className="w-full max-w-md aspect-square bg-slate-800 rounded-3xl border border-slate-700 relative z-10 overflow-hidden group">
                                 <img src="/images/voiceslide-movie-lp/feature_mic.png" alt="Microphone Icon" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
@@ -48,7 +48,7 @@ export default function Features() {
 
                     {/* Feature 2 */}
                     <div className="flex flex-col md:flex-row items-center gap-12">
-                        <div className="flex-1 order-1 flex justify-center">
+                        <div className="flex-1 order-1 flex justify-center relative">
                             <div className="w-full max-w-md aspect-square bg-gradient-to-br from-yellow-500 to-red-500 rounded-3xl opacity-90 blur-xl absolute scale-90" />
                             <div className="w-full max-w-md aspect-square bg-slate-800 rounded-3xl border border-slate-700 relative z-10 overflow-hidden group">
                                 <img src="/images/voiceslide-movie-lp/feature_bulb.png" alt="Idea Bulb Icon" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
@@ -102,7 +102,7 @@ export default function Features() {
                                 <p className="text-xl font-bold text-white mt-1">1動画生成 = 約80円 (API利用料)</p>
                             </div>
                         </div>
-                        <div className="flex-1 order-1 md:order-2 flex justify-center">
+                        <div className="flex-1 order-1 md:order-2 flex justify-center relative">
                             <div className="w-full max-w-md aspect-square bg-gradient-to-br from-green-500 to-emerald-500 rounded-3xl opacity-90 blur-xl absolute scale-90" />
                             <div className="w-full max-w-md aspect-square bg-slate-800 rounded-3xl border border-slate-700 relative z-10 overflow-hidden group">
                                 <img src="/images/voiceslide-movie-lp/feature_asset.png" alt="Asset Icon" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
