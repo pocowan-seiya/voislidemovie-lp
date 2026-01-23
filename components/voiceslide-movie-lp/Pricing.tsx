@@ -39,7 +39,7 @@ export default function Pricing() {
                 <div className="bg-gradient-to-b from-red-600 to-red-700 text-white p-1 rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-300">
                     <div className="bg-red-600 rounded-[22px] p-8 md:p-12 border border-red-400">
                         <div className="inline-block bg-yellow-400 text-red-900 px-6 py-2 rounded-full font-bold text-lg mb-6 animate-pulse">
-                            🔥 超早割（3日間限定）
+                            🔥 2日間限定・再販売
                         </div>
 
                         <div className="text-5xl md:text-7xl font-bold mb-4 tracking-tighter">
@@ -47,11 +47,11 @@ export default function Pricing() {
                         </div>
 
                         <p className="text-red-100 mb-8 font-medium">
-                            2026年1月16日（木）20時 〜 1月19日（日）23時59分
+                            2026年1月23日（金）20時 〜 1月24日（土）23時59分
                         </p>
 
                         <div className="bg-black/20 rounded-xl p-6 mb-8">
-                            <CountdownTimerLP targetDate="2026-01-19T23:59:00+09:00" />
+                            <CountdownTimerLP targetDate="2026-01-24T23:59:00+09:00" />
                         </div>
 
                         <a
@@ -61,16 +61,11 @@ export default function Pricing() {
                             今すぐ購入する
                             <span className="block text-sm font-normal mt-1 opacity-80">（決済ページへ進む）</span>
                         </a>
-
-                        <div className="mt-6 flex justify-center gap-8 text-sm font-medium text-red-200">
-                            <p>👥 残り枠数：<span className="font-bold text-white">87/100名</span></p>
-                        </div>
                     </div>
                 </div>
 
                 <p className="mt-8 text-slate-500 text-sm">
-                    ※ 通常価格：¥9,800（2026年1月20日〜）<br />
-                    ※ 先行100名限定です。100名に達した時点で販売終了となります。
+                    ※ 先着50名限定です。50名に達した時点で販売終了となります。
                 </p>
 
             </div>

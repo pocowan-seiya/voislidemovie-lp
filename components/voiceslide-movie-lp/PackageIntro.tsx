@@ -35,7 +35,7 @@ export default function PackageIntro() {
                     </ul>
                     <p className="text-lg">
                         も含めた、完全パッケージを<br />
-                        <span className="text-yellow-300 font-bold text-2xl">先行100名限定</span>
+                        <span className="text-yellow-300 font-bold text-2xl">先着50名限定</span>
                         でご提供します。
                     </p>
                 </div>

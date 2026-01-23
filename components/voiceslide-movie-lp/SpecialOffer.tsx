@@ -3,8 +3,8 @@
 import CountdownTimerLP from "./CountdownTimerLP";
 
 export default function SpecialOffer() {
-    // Set target date to Jan 19th (Sunday) 23:59:00
-    const targetDate = "2026-01-19T23:59:00+09:00";
+    // Set target date to Jan 24th (Saturday) 23:59:00 for re-sale
+    const targetDate = "2026-01-24T23:59:00+09:00";
 
     return (
         <section className="py-16 bg-gradient-to-br from-indigo-900 to-slate-900 text-white relative overflow-hidden">
@@ -16,7 +16,7 @@ export default function SpecialOffer() {
             <div className="max-w-4xl mx-auto px-6 relative z-10 text-center">
 
                 <div className="inline-block px-6 py-2 bg-red-600 text-white font-bold rounded-full mb-8 animate-bounce shadow-lg shadow-red-500/30">
-                    ⚠︎ 今回だけの限定案内
+                    ⚠︎ 2日間限定・再販売
                 </div>
 
                 <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">
