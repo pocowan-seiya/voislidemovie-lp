@@ -14,7 +14,7 @@ export default function FinalCTA() {
                         href="https://pocowa.com/p/r/IIBEQRAy"
                         className="inline-block bg-red-600 text-white font-bold text-xl md:text-2xl py-5 px-12 rounded-full shadow-xl hover:bg-red-700 hover:scale-105 transition-all"
                     >
-                        🔥 2日間限定 ¥7,800 で参加する
+                        🎁 先行価格 ¥9,800 で参加する
                     </a>
                 </div>
 

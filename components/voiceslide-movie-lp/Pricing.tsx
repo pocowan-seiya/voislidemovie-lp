@@ -1,5 +1,3 @@
-import CountdownTimerLP from "./CountdownTimerLP";
-
 export default function Pricing() {
     return (
         <section className="py-24 bg-white border-t border-slate-100">
@@ -36,27 +34,19 @@ export default function Pricing() {
                 </div>
 
                 {/* Price Box */}
-                <div className="bg-gradient-to-b from-red-600 to-red-700 text-white p-1 rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-300">
-                    <div className="bg-red-600 rounded-[22px] p-8 md:p-12 border border-red-400">
-                        <div className="inline-block bg-yellow-400 text-red-900 px-6 py-2 rounded-full font-bold text-lg mb-6 animate-pulse">
-                            🔥 2日間限定・再販売
+                <div className="bg-gradient-to-b from-blue-600 to-blue-700 text-white p-1 rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-300">
+                    <div className="bg-blue-600 rounded-[22px] p-8 md:p-12 border border-blue-400">
+                        <div className="inline-block bg-yellow-400 text-blue-900 px-6 py-2 rounded-full font-bold text-lg mb-6">
+                            🎁 先行価格
                         </div>
 
                         <div className="text-5xl md:text-7xl font-bold mb-4 tracking-tighter">
-                            ¥7,800 <span className="text-2xl font-normal opacity-80">（税込）</span>
-                        </div>
-
-                        <p className="text-red-100 mb-8 font-medium">
-                            2026年1月23日（金）20時 〜 1月24日（土）23時59分
-                        </p>
-
-                        <div className="bg-black/20 rounded-xl p-6 mb-8">
-                            <CountdownTimerLP targetDate="2026-01-24T23:59:00+09:00" />
+                            ¥9,800 <span className="text-2xl font-normal opacity-80">（税込）</span>
                         </div>
 
                         <a
                             href="https://pocowa.com/p/r/IIBEQRAy"
-                            className="block w-full bg-yellow-400 text-red-900 font-bold text-2xl md:text-3xl py-6 rounded-full shadow-[0_4px_0_rgb(180,83,9)] hover:translate-y-1 hover:shadow-none transition-all active:bg-yellow-500"
+                            className="block w-full bg-yellow-400 text-blue-900 font-bold text-2xl md:text-3xl py-6 rounded-full shadow-[0_4px_0_rgb(30,64,175)] hover:translate-y-1 hover:shadow-none transition-all active:bg-yellow-500"
                         >
                             今すぐ購入する
                             <span className="block text-sm font-normal mt-1 opacity-80">（決済ページへ進む）</span>
