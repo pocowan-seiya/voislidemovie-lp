@@ -12,29 +12,13 @@ if GEMINI_API_KEY:
 def upload_file(path):
     """Uploads a file to Gemini."""
     print(f"Uploading file: {path}...")
-    video_file = genai.upload_file(path=path)
-    print(f"Completed upload: {video_file.uri}")
-    return video_file
-
-def generate_content(prompt, file_uri=None, mime_type=None):
-    """Generates content using Gemini 1.5 Pro."""
-    model = genai.GenerativeModel('gemini-1.5-pro')
-
-    content = [prompt]
-    if file_uri:
-        # We need to retrieve the file object or pass the file data.
-        # For simplicity in this wrapper, we assume file_uri is the file object from upload_file
-        # But genai.upload_file returns a File object which can be passed directly.
-        # Let's adjust the signature to accept the file object.
-        pass
-    
-    # Re-implementation for clarity:
-    # If we have a file object (from upload_file), we pass it.
-    pass
+    media_file = genai.upload_file(path=path)
+    print(f"Completed upload: {media_file.uri}")
+    return media_file
 
 class GeminiClient:
     def __init__(self):
-        self.model = genai.GenerativeModel('gemini-2.0-flash-lite')
+        self.model = genai.GenerativeModel('gemini-2.0-flash')
 
     def upload_media(self, file_path):
         """Uploads media file to Gemini."""
@@ -47,5 +31,17 @@ class GeminiClient:
         if media_file:
             contents.append(media_file)
         
-        response = self.model.generate_content(contents)
-        return response.text
+        # Use a retry loop for Quota Exceeded errors
+        import time
+        max_retries = 3
+        for i in range(max_retries):
+            try:
+                response = self.model.generate_content(contents)
+                return response.text
+            except Exception as e:
+                if "429" in str(e) and i < max_retries - 1:
+                    wait_time = 60
+                    print(f"Quota exceeded. Retrying in {wait_time} seconds... (Attempt {i+1}/{max_retries})")
+                    time.sleep(wait_time)
+                else:
+                    raise e

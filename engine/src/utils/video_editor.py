@@ -1,7 +1,7 @@
 import logging
 import os
-from moviepy.editor import VideoFileClip, concatenate_videoclips
-from moviepy.video.fx.all import crop
+from moviepy import VideoFileClip, concatenate_videoclips, vfx
+# from moviepy.video.fx.all import crop
 
 def remove_silence(input_path, output_path, db_threshold=-50, min_silence_len=1000):
     """
@@ -50,14 +50,14 @@ def create_short(input_path, output_path, start_time, end_time):
             x_center = w / 2
             x1 = x_center - (new_width / 2)
             x2 = x_center + (new_width / 2)
-            cropped_clip = crop(clip, x1=x1, y1=0, x2=x2, y2=h)
+            cropped_clip = clip.cropped(x1=x1, y1=0, x2=x2, y2=h)
         else:
             # Too tall (unlikely for landscape video), crop height
             new_height = w / target_ratio
             y_center = h / 2
             y1 = y_center - (new_height / 2)
             y2 = y_center + (new_height / 2)
-            cropped_clip = crop(clip, x1=0, y1=y1, x2=w, y2=y2)
+            cropped_clip = clip.cropped(x1=0, y1=y1, x2=w, y2=y2)
             
         cropped_clip.write_videofile(output_path, codec="libx264", audio_codec="aac")
         clip.close()
