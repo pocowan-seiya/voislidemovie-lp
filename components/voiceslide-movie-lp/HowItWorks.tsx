@@ -53,14 +53,15 @@ export default function HowItWorks() {
                         </div>
                         <p className="text-slate-600 mb-4 text-sm leading-relaxed">
                             VoiSlide Movie に音声をアップロード。<br />
-                            テンプレートを選択するだけ。<br />
+                            テンプレートを選択し、ワイプやBGMも設定可能。<br />
                             あとは「生成」ボタンを押すだけ。
                         </p>
                         <div className="bg-white p-4 rounded-lg text-sm text-slate-500 border border-slate-100">
                             <p className="font-bold text-slate-700 mb-2">操作は簡単</p>
                             <ul className="space-y-1 text-xs">
                                 <li>✅ 音声ファイルをD&D</li>
-                                <li>✅ テンプレートを選択</li>
+                                <li>✅ テンプレート・BGM・ワイプを選択</li>
+                                <li>✅ 横長/縦長を選択</li>
                                 <li>✅ 「生成」をクリック</li>
                             </ul>
                         </div>
