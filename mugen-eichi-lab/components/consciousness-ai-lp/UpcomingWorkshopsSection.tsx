@@ -23,34 +23,23 @@ interface Workshop {
 
 const workshops: Workshop[] = [
     {
-        date: '3/14',
+        date: '4/11',
         day: '土',
-        time: '15:00〜17:00',
-        title: 'Antigravity × Obsidian — AI × 第2の脳のセットアップ',
+        time: '15:00〜',
+        title: 'Claude Code ワークショップ',
         description:
-            '江藤が毎日使っている最先端のAI環境を、一緒にセットアップします。Antigravity（AIコーディングエージェント）と Obsidian（第2の脳）を連携させ、自分専用のAI環境がその場で完成します。AIの使い方が根本的に変わる、最初の一歩です。',
-        tag: '初回ワークショップ',
+            'Claude Codeの基本から応用まで、ハンズオン形式で実践するワークショップです。アーカイブでの参加も可能です。',
+        tag: 'アーカイブ配信中',
         tagColor: '#c9a84c',
         confirmed: true,
     },
     {
-        date: '3/28',
-        day: '土',
-        time: '15:00〜17:00',
-        title: 'Claude Cowork — 自律型AIエージェントを導入しよう',
-        description:
-            'Claudeの自律的に動いてくれるエージェント機能を、実際に導入・セットアップしていくコワーキングセッション。スケジュールタスクやルーティンタスクの自動化も可能で、手軽に導入できるのが魅力です。江藤がリアルタイムでサポートしながら、参加者全員で「自分のビジョン × 自律型AI」を実践します。',
-        tag: '第2回ワークショップ',
-        tagColor: '#c9a84c',
-        confirmed: true,
-    },
-    {
-        date: '4月',
+        date: '4月下旬',
         day: '',
         time: '日程調整中',
-        title: '意識のシフト × AI実践ワーク',
+        title: '次回ワークショップ',
         description:
-            '意識のシフトとAIの活用を同時に実践するワークショップ。内容は参加メンバーの進捗やニーズに合わせて設計します。詳細は3月中にお届けします。',
+            '4月下旬に次回ワークショップを開催予定です。詳細が決まり次第お知らせします。',
         tag: 'Coming Soon',
         tagColor: '#7c5cbf',
         confirmed: false,
